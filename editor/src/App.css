@@ -1,0 +1,20 @@
+.app-container {
+  width: 50vh;
+  margin: 50px auto 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container > .app-container__vr-btn {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.app-container > .app-container__vr-btn > a {
+  width: 50%;
+}
+
+.app-container > .app-container__vr-btn > a > button {
+  width: 100%;
+}

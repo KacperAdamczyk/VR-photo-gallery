@@ -1,0 +1,17 @@
+{
+  "name": "NTP-Project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "",
+  "author": "Kacper Adamczyk",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "shelljs": "^0.8.2"
+  },
+  "scripts": {
+    "start": "cd backend && ts-node server.ts",
+    "deploy": "node scripts/deploy.js",
+    "install": "node scripts/install.js"
+  }
+}
