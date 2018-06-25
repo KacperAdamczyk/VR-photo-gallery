@@ -3,3 +3,7 @@
     justify-content: center;
     margin-bottom: 20px;
 }
+
+.image-uploader__upload-btn {
+    margin-left: 3px;
+}

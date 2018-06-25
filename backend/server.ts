@@ -22,8 +22,8 @@ server.use(morgan('dev'));
 
 server.post('/images', upload.array('images', 12), async (req, res) => {
     try {
-        const collection = await loadCollection(COLLECTION_NAME, db);
-        const data = Array.prototype.concat(collection.insert(req.files));
+        const col = await loadCollection(COLLECTION_NAME, db);
+        const data = Array.prototype.concat(col.insert(req.files));
 
         db.saveDatabase();
         res.send(data.map(img => ({ id: img.$loki, fileName: img.filename, originalName: img.originalname })));
@@ -58,14 +58,29 @@ server.get('/images/:id', async (req, res) => {
     }
 });
 
+server.delete('/images/:id', async (req, res) => {
+    try {
+        const col = await loadCollection(COLLECTION_NAME, db);
+        col.findAndRemove({$loki: +req.params.id});
+        db.save();
+        res.sendStatus(200);
+    } catch (err) {
+        res.sendStatus(400);
+    }
+});
+
 const vrPath = './dist/vr/index.html';
 server.get('/vr', (req, res) => {
     res.sendFile(path.join(__dirname, vrPath));
 });
 
 const editorPath = './dist/editor/index.html';
-server.get('/', (req, res) => {
+server.get('/editor', (req, res) => {
     res.sendFile(path.join(__dirname, editorPath));
+});
+
+server.get('/*', (req, res) => {
+    res.redirect('/editor');
 });
 
 const port = 8080;

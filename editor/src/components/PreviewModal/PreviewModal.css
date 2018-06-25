@@ -1,0 +1,17 @@
+.preview-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.preview-modal__image {
+    width: auto;
+    max-height: 95%;
+}
+
+.preview-modal .preview-modal__close {
+    align-self: flex-end;
+    display: flex;
+}

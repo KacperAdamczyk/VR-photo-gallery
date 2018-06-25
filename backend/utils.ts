@@ -1,7 +1,6 @@
 import { Collection } from 'lokijs';
 
 const imageFilter = (req, file, cb) => {
-    cb(null, true); return;
     if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
         return cb(new Error('Only this file types are allowed: jpg,jpeg,png,gif'), false);
     }

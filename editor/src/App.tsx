@@ -1,9 +1,13 @@
 import * as React from 'react';
+import {Component, Fragment} from 'react';
+import {Provider} from 'react-redux';
 
 import ImagesList from './components/ImagesList/ImagesList';
 import ImageUploader from './components/ImageUploader/ImageUploader';
+import PreviewModal from './components/PreviewModal/PreviewModal';
 import {baseUrl} from './config';
 import {Image} from './models/Image';
+import store from './store/store';
 
 import './App.css';
 
@@ -11,31 +15,25 @@ interface IState {
     images: Image[];
 }
 
-class App extends React.Component<{}, IState> {
-    public state ={
-        images: []
-    };
-
-    public componentDidMount() {
-        this.updateImages();
-    }
-
+class App extends Component<{}, IState> {
     public render() {
         return (
-            <div className='app-container'>
-                <div className='app-container__vr-btn'>
-                    <a href={`${baseUrl}/vr`}><button className='btn btn-primary'>Go to VR!</button></a>
-                </div>
-                <ImageUploader refreshFiles={this.updateImages}/>
-                <ImagesList images={this.state.images}/>
-            </div>
+            <Provider store={store}>
+                <Fragment>
+                    <PreviewModal/>
+                    <div className='app-container'>
+                        <div className='app-container__vr-btn'>
+                            <button className='btn btn-primary' onClick={this.navigate}>Go to VR!</button>
+                        </div>
+                        <ImageUploader/>
+                        <ImagesList/>
+                    </div>
+                </Fragment>
+            </Provider>
         );
     }
 
-    private updateImages = () =>
-        fetch(`${baseUrl}/images`)
-        .then(res => res.json())
-        .then((images: Image[]) => this.setState({images}));
+    private navigate = () => window.open(`${baseUrl}/vr`);
 }
 
 export default App;

@@ -1,43 +1,34 @@
 import React from 'react';
-import { AppRegistry, Environment, Image, StyleSheet, Text, View, VrButton, } from 'react-360';
+import { AppRegistry, Image, StyleSheet, Text, View, VrButton, } from 'react-360';
 
-class Background extends React.Component {
-    constructor(props) {
-        super(props);
-        Environment.setBackgroundImage(props.uri, {format: props.format});
-        this.type = '2D';
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.uri !== this.props.uri || nextProps.format !== this.props.format) {
-            Environment.setBackgroundImage(nextProps.uri, {format: nextProps.format});
-        }
-    }
-
-    render() {
-        return null;
-    }
-}
+import Background from './components/Background/Background';
+import { baseUrl } from './config';
 
 class App extends React.Component {
-    url = 'http://localhost:8080/images';
+
+    defaultHeight = 700;
     state = {
         index: 0,
-        images: []
+        images: [],
+        size: {
+            height: this.defaultHeight,
+            width: '100%'
+        },
+        background: false
     };
 
     componentDidMount() {
-        fetch(this.url)
+        fetch(baseUrl)
           .then(res => res.json())
           .then(images => images.map(image => ({
               id: image.$loki,
               name: image.originalname
           })))
-          .then(images => console.log(images) || this.setState({images}))
-          .catch(e => console.log(e));
+          .then(images => this.setState({images}),
+            e => console.log(e));
     }
 
-    _prevPhoto = () => {
+    prevImage = () => {
         let next = this.state.index - 1;
         if (next < 0) {
             next += this.state.images.length;
@@ -47,36 +38,42 @@ class App extends React.Component {
         });
     };
 
-    _nextPhoto = () => {
+    nextImage = () => {
         this.setState({
             index: (this.state.index + 1) % this.state.images.length,
         });
     };
 
+    changeMode = () => this.setState({background: !this.state.background});
+    handleInput = (e) => {
+        if (e.nativeEvent.inputEvent && e.nativeEvent.inputEvent.type !== 'button') {
+            this.nextImage();
+        }
+    };
+
     render() {
         const selected = this.state.images[this.state.index];
-          const current = selected ?
-            {
-              uri: `${this.url}/${selected.id}`,
-              format: '2D',
+        const current = selected ?
+          {
+              uri: `${baseUrl}/${selected.id}`,
               name: selected.name
-          } : {uri: null};
+          } : {uri: null, name: '(select image)'};
         return (
           <View style={styles.wrapper}>
-              {
-                  true ?
-                    <Image source={{uri: current.uri}} style={styles.image}/> :
-                    <Background uri={current.uri} format={current.format}/>
-              }
-              <View style={styles.controls}>
-                  <VrButton onClick={this._prevPhoto} style={styles.button}>
+              <Image source={{uri: this.state.background ? null : current.uri}} style={this.state.size}/>
+              <Background uri={{uri: this.state.background ? current.uri : null}}/>
+              <View style={styles.controls} onInput={this.handleInput}>
+                  <VrButton onClick={this.prevImage} style={styles.button}>
                       <Text style={styles.buttonText}>{'<'}</Text>
                   </VrButton>
                   <View>
                       <Text style={styles.title}>{current.name}</Text>
                   </View>
-                  <VrButton onClick={this._nextPhoto} style={styles.button}>
+                  <VrButton onClick={this.nextImage} style={styles.button}>
                       <Text style={styles.buttonText}>{'>'}</Text>
+                  </VrButton>
+                  <VrButton onClick={this.changeMode} style={styles.buttonWide}>
+                      <Text style={styles.buttonTextSmall}>{'Change mode'}</Text>
                   </VrButton>
               </View>
           </View>
@@ -88,8 +85,9 @@ const styles = StyleSheet.create({
     wrapper: {
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        height: 600,
+        alignContent: 'space-between',
+        justifyContent: 'flex-end',
+        height: 1000,
         width: 1000,
     },
     controls: {
@@ -97,7 +95,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: 600,
+        width: '100%',
+        height: 80,
         padding: 10,
     },
     title: {
@@ -112,16 +111,25 @@ const styles = StyleSheet.create({
         width: 40,
         height: 44,
     },
+    buttonWide: {
+        marginLeft: 80,
+        backgroundColor: '#c0c0d0',
+        borderRadius: 5,
+        width: 130,
+        height: 30
+    },
     buttonText: {
         textAlign: 'center',
         color: '#000000',
         fontSize: 30,
         fontWeight: 'bold',
     },
-    image: {
-        width: 600,
-        height: 500
-    }
+    buttonTextSmall: {
+        textAlign: 'center',
+        color: '#000000',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
 });
 
 AppRegistry.registerComponent('App', () => App);

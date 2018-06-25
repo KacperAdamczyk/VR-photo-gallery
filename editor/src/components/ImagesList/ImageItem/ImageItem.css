@@ -1,0 +1,21 @@
+.image-item {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin: 1px 0;
+}
+
+.image-item__text {
+    margin-right: auto;
+}
+
+.image-item .image-item__action-btn {
+    display: inline-flex;
+}
+
+.image-item .image-item__action-btn:not(:last-child) {
+    margin-right: 3px;
+}
