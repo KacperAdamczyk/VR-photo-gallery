@@ -5,7 +5,6 @@ import Background from './components/Background/Background';
 import { baseUrl } from './config';
 
 class App extends React.Component {
-
     defaultHeight = 700;
     state = {
         index: 0,

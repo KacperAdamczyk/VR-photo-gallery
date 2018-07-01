@@ -1,1 +1,1 @@
-export const baseUrl = 'http://192.168.0.5:8080/images';
+export const baseUrl = 'http://localhost:8080/images';
